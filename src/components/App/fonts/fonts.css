@@ -1,0 +1,19 @@
+/* fix https://github.com/styled-components/styled-components/issues/1593 */
+
+@font-face {
+    font-family: "Exo2.0";
+    src: url("./Exo2.0.otf");
+    font-weight: 100;
+}
+
+@font-face {
+    font-family: "Trebuchet MS";
+    src: url("./Trebuchet\ MS.ttf");
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "Trebuchet MS";
+    src: url("./Trebuchet\ MS\ Bold.ttf");
+    font-weight: bold;
+}
