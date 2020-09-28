@@ -35,7 +35,6 @@ const AppContainer = styled.div.attrs((props) => ({
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
 `;
 
 const AppHeadline = styled.h1`
@@ -54,5 +53,10 @@ const FeedBags = styled.div`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-evenly;
+
+    /* ie11 fix */
+    justify-content: space-around;
+    @supports (justify-content: space-evenly) {
+        justify-content: space-evenly;
+    }
 `;

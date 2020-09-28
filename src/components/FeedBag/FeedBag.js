@@ -18,43 +18,45 @@ export default function FeedBag({ feedBag }) {
     const setHoverOn = () => setHover(true);
     const setHoverOff = () => setHover(false);
 
+    const stateСolor = feedBag.available
+        ? selected
+            ? hover
+                ? "#E52E7A"
+                : "#D91667"
+            : hover
+            ? "#2EA8E6"
+            : "#1698D9"
+        : "#b3b3b3";
+
     return (
         <FeedBagWrapper>
-            <FeedBagContainer
+            <FeedBagContent
                 onClick={onFeedBagClick}
                 onMouseEnter={setHoverOn}
                 onMouseLeave={setHoverOff}
-                selected={selected}
-                hover={hover}
+                backgroundColor={stateСolor}
                 available={feedBag.available}
             >
-                <FeedBagContent>
-                    <FeedBagInfo>
-                        <FeedBagHeadline>
-                            {(selected && hover && "Котэ не одобряет?") ||
-                                "Сказочное заморское яство"}
-                        </FeedBagHeadline>
-                        <FeedBagName>Нямушка</FeedBagName>
-                        <FeedBagTaste>{feedBag.taste}</FeedBagTaste>
-                        <FeedBagCaptionList>
-                            {feedBag.captionList.map((captionItem, index) => (
-                                <li key={index}>{captionItem}</li>
-                            ))}
-                        </FeedBagCaptionList>
-                    </FeedBagInfo>
-                    <FeedBagImage src={catImage} alt="cat" />
-                    <FeedBagWeightContainer
-                        selected={selected}
-                        hover={hover}
-                        available={feedBag.available}
-                    >
-                        <FeedBagWeightValue>
-                            {feedBag.weight}
-                        </FeedBagWeightValue>
-                        <FeedBagWeightUnits>кг</FeedBagWeightUnits>
-                    </FeedBagWeightContainer>
-                </FeedBagContent>
-            </FeedBagContainer>
+                <FeedBagInfo>
+                    <FeedBagHeadline>
+                        {(selected && hover && "Котэ не одобряет?") ||
+                            "Сказочное заморское яство"}
+                    </FeedBagHeadline>
+                    <FeedBagName>Нямушка</FeedBagName>
+                    <FeedBagTaste>{feedBag.taste}</FeedBagTaste>
+                    <FeedBagCaptionList>
+                        {feedBag.captionList.map((captionItem, index) => (
+                            <li key={index}>{captionItem}</li>
+                        ))}
+                    </FeedBagCaptionList>
+                </FeedBagInfo>
+                <FeedBagImage src={catImage} alt="cat" />
+                <FeedBagWeightContainer backgroundColor={stateСolor}>
+                    <FeedBagWeightValue>{feedBag.weight}</FeedBagWeightValue>
+                    <FeedBagWeightUnits>кг</FeedBagWeightUnits>
+                </FeedBagWeightContainer>
+                {!feedBag.available && <FeedBagNotAvailableOverflow />}
+            </FeedBagContent>
             <FeedBagUnderline available={feedBag.available}>
                 {feedBag.available ? (
                     selected ? (
@@ -66,8 +68,6 @@ export default function FeedBag({ feedBag }) {
                                 onClick={onBuyClick}
                                 onMouseEnter={setHoverOn}
                                 onMouseLeave={setHoverOff}
-                                selected={selected}
-                                hover={hover}
                             >
                                 купи.
                             </FeedBagBuyButton>
@@ -81,19 +81,23 @@ export default function FeedBag({ feedBag }) {
     );
 }
 
-const feedBagSlashTopWidth = "16%";
-const feedBagSlashLeftWidth = "10%";
-const feedBagBorderWidth = 4;
-const feedBagBorderRaduis = 16;
+const feedBagBevelWidth = "64px";
+const feedBagBorderWidth = "4px";
+const feedBagBorderRadius = "16px";
+
+const gradientLength = parseInt(feedBagBorderWidth);
+const center = (parseInt(feedBagBevelWidth) / 2) * Math.sqrt(2);
+const offset = gradientLength * (1 - Math.sqrt(0.5));
+const gradientStartPosition = center - offset;
 
 const FeedBagWrapper = styled.div`
     display: flex;
     flex-direction: column;
     user-select: none;
-
+    position: relative;
     width: 95%;
     margin-bottom: 2rem;
-    @media screen and (min-width: 576px) {
+    @media screen and (min-width: 640px) {
         width: 45%;
         &:last-child {
             margin-bottom: 0;
@@ -105,67 +109,102 @@ const FeedBagWrapper = styled.div`
     }
 `;
 
-const FeedBagContainer = styled.div`
-    flex-grow: 1;
-    pointer-events: ${(props) => (props.available ? "auto" : "none")};
-    background-color: ${(props) =>
-        props.available
-            ? props.selected
-                ? props.hover
-                    ? "#E52E7A"
-                    : "#D91667"
-                : props.hover
-                ? "#2EA8E6"
-                : "#1698D9"
-            : "#b3b3b3"};
-    transition: background-color 0.3s;
-    padding: ${feedBagBorderWidth}px;
-    border-radius: ${feedBagBorderRaduis + feedBagBorderWidth}px;
-    clip-path: polygon(
-        ${feedBagSlashTopWidth} 0,
-        100% 0,
-        100% 100%,
-        0 100%,
-        0 ${feedBagSlashLeftWidth}
-    );
-    position: relative;
-    &::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: ${(props) => (props.available ? "none" : "block")};
-        z-index: 1;
-        background-color: #f2f2f2;
-        border-radius: ${feedBagBorderRaduis + feedBagBorderWidth}px;
-        opacity: 0.4;
-    }
-`;
-
 const FeedBagContent = styled.div`
     display: flex;
     flex-direction: column;
     height: 100%;
-    background-color: #ffffff;
-    border-radius: ${feedBagBorderRaduis}px;
     position: relative;
     overflow: hidden;
-    clip-path: polygon(
-        ${feedBagSlashTopWidth} 0,
-        100% 0,
-        100% 100%,
-        0 100%,
-        0 ${feedBagSlashLeftWidth}
-    );
+    border-radius: ${feedBagBorderRadius};
+    pointer-events: ${(props) => (props.available ? "auto" : "none")};
+
+    background-image: linear-gradient(
+            to left,
+            ${(props) => props.backgroundColor},
+            ${(props) => props.backgroundColor}
+        ),
+        linear-gradient(
+            to top,
+            ${(props) => props.backgroundColor},
+            ${(props) => props.backgroundColor}
+        ),
+        linear-gradient(
+            135deg,
+            transparent calc(${gradientStartPosition}px),
+            ${(props) => props.backgroundColor} calc(${gradientStartPosition}px),
+            ${(props) => props.backgroundColor}
+                calc(${gradientStartPosition}px + ${gradientLength}px),
+            #ffffff calc(${gradientStartPosition}px + ${gradientLength}px)
+        ),
+        linear-gradient(to bottom, #ffffff, #ffffff),
+        linear-gradient(to top, #ffffff, #ffffff);
+    background-position: top right, bottom left, top left, top right,
+        bottom left;
+    background-size: calc(100% - ${feedBagBevelWidth}) ${feedBagBorderWidth},
+        ${feedBagBorderWidth} calc(100% - ${feedBagBevelWidth}),
+        ${feedBagBevelWidth} ${feedBagBevelWidth},
+        calc(100% - ${feedBagBevelWidth} + 1px) 100%,
+        100% calc(100% - ${feedBagBevelWidth} + 1px); /* (+ 1px) ie11 fix */
+    background-repeat: no-repeat;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background-color: transparent;
+        width: ${feedBagBorderRadius};
+        border-radius: ${feedBagBorderRadius};
+        border: ${feedBagBorderWidth} solid ${(props) => props.backgroundColor};
+        border-left: none;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-color: transparent;
+        height: ${feedBagBorderRadius};
+        border-radius: ${feedBagBorderRadius};
+        border: ${feedBagBorderWidth} solid ${(props) => props.backgroundColor};
+        border-top: none;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+`;
+
+const FeedBagNotAvailableOverflow = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    opacity: 0.5;
+    background-image: linear-gradient(
+            135deg,
+            transparent ${gradientStartPosition}px,
+            #ffffff ${gradientStartPosition}px
+        ),
+        linear-gradient(to bottom, #ffffff, #ffffff),
+        linear-gradient(to top, #ffffff, #ffffff);
+    background-position: top left, top right, bottom left;
+    background-size: ${feedBagBevelWidth} ${feedBagBevelWidth},
+        calc(100% - ${feedBagBevelWidth} + 1px) 100%,
+        100% calc(100% - ${feedBagBevelWidth} + 1px); /* (+ 1px) ie11 fix */
+    background-repeat: no-repeat;
+    z-index: 1;
 `;
 
 const FeedBagInfo = styled.div`
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    margin-left: ${feedBagSlashTopWidth};
+    margin-left: ${feedBagBevelWidth};
 `;
 
 const FeedBagHeadline = styled.p`
@@ -177,9 +216,13 @@ const FeedBagHeadline = styled.p`
 
 const FeedBagName = styled.h2`
     font-weight: bold;
-    font-size: 48px;
-    line-height: 56px;
+    font-size: 38px;
+    line-height: 46px;
     margin-top: 5px;
+    @media screen and (min-width: 640px) {
+        font-size: 48px;
+        line-height: 56px;
+    }
 `;
 
 const FeedBagTaste = styled.h3`
@@ -198,11 +241,13 @@ const FeedBagCaptionList = styled.ul`
 
 const FeedBagImage = styled.img`
     margin-top: 33px;
+    margin-left: ${feedBagBorderWidth};
     width: 100%;
     object-fit: cover;
 `;
 
 const FeedBagWeightContainer = styled.div`
+    background-color: ${(props) => props.backgroundColor};
     position: absolute;
     right: 16px;
     bottom: 16px;
@@ -215,17 +260,6 @@ const FeedBagWeightContainer = styled.div`
     border-radius: 50%;
     color: #ffffff;
     text-align: center;
-    background-color: ${(props) =>
-        props.available
-            ? props.selected
-                ? props.hover
-                    ? "#E52E7A"
-                    : "#D91667"
-                : props.hover
-                ? "#2EA8E6"
-                : "#1698D9"
-            : "#b3b3b3"};
-    transition: background-color 0.3s;
 `;
 
 const FeedBagWeightValue = styled.p`
@@ -245,15 +279,23 @@ const FeedBagUnderline = styled.p`
 `;
 
 const FeedBagBuyButton = styled.span`
-    color: ${(props) =>
-        props.selected
-            ? props.hover
-                ? "#E52E7A"
-                : "#D91667"
-            : props.hover
-            ? "#2EA8E6"
-            : "#1698D9"};
-    transition: color 0.3s;
     border-bottom: 1px dashed #1698d9;
     cursor: pointer;
+    color: #1698d9;
+    &:hover {
+        color: #2ea8e6;
+    }
 `;
+
+// const a = parseInt(feedBagBevelWidth);
+// const b = parseInt(feedBagBorderWidth);
+
+// Вариант 1 - идеальное соединение
+// const center = a / 2 * Math.sqrt(2);
+// const gradientLength = b * Math.sqrt(0.5);
+
+// Вариант 2 (Скос с такой же шириной, как у рамки)
+// const center = a / 2 * Math.sqrt(2);
+// const offset = b * (1 - Math.sqrt(0.5));
+// const gradientStartPosition = center - offset;
+// const gradientLength = b;

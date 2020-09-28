@@ -8,4 +8,11 @@ export default createGlobalStyle`
         font-family: "Trebuchet MS";
         line-height: 1;
     }
+
+    /* ie11 fix */
+    #app {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
 `;

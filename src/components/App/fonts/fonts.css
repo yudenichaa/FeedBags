@@ -1,19 +1,20 @@
 /* fix https://github.com/styled-components/styled-components/issues/1593 */
+/* woff for ie11 */
 
 @font-face {
     font-family: "Exo2.0";
-    src: url("./Exo2.0.otf");
+    src: url("./Exo2_0.woff2"), url("./Exo2_0.woff");
     font-weight: 100;
 }
 
 @font-face {
     font-family: "Trebuchet MS";
-    src: url("./Trebuchet\ MS.ttf");
+    src: url("./TrebuchetMS.woff2"), url("./TrebuchetMS.woff");
     font-weight: normal;
 }
 
 @font-face {
     font-family: "Trebuchet MS";
-    src: url("./Trebuchet\ MS\ Bold.ttf");
+    src: url("./TrebuchetMSBold.woff2"), url("./TrebuchetMSBold.woff");
     font-weight: bold;
 }
