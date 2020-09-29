@@ -94,7 +94,6 @@ const FeedBagWrapper = styled.div`
     display: flex;
     flex-direction: column;
     user-select: none;
-    position: relative;
     width: 95%;
     margin-bottom: 2rem;
     @media screen and (min-width: 640px) {
